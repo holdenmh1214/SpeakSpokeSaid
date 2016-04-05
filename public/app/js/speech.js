@@ -78,7 +78,6 @@ function updateCountry() {
   }
   select_dialect.style.visibility = list[1].length == 1 ? 'hidden' : 'visible';
 }
-var create_email = false;
 var final_transcript = '';
 var recognizing = false;
 var ignore_onend;
@@ -96,22 +95,9 @@ if (!('webkitSpeechRecognition' in window)) {
     start_img.src = 'app/assets/mic-animate.gif';
   };
   recognition.onerror = function(event) {
-    if (event.error == 'no-speech') {
-      start_img.src = 'mic.gif';
-      showInfo('info_no_speech');
-      ignore_onend = true;
-    }
     if (event.error == 'audio-capture') {
       start_img.src = 'mic.gif';
       showInfo('info_no_microphone');
-      ignore_onend = true;
-    }
-    if (event.error == 'not-allowed') {
-      if (event.timeStamp - start_timestamp < 100) {
-        showInfo('info_blocked');
-      } else {
-        showInfo('info_denied');
-      }
       ignore_onend = true;
     }
   };
@@ -132,14 +118,11 @@ if (!('webkitSpeechRecognition' in window)) {
       range.selectNode(document.getElementById('final_span'));
       window.getSelection().addRange(range);
     }
-    if (create_email) {
-      create_email = false;
-      createEmail();
-    }
   };
   recognition.onresult = function(event) {
     var interim_transcript = '';
     for (var i = event.resultIndex; i < event.results.length; ++i) {
+
       if (event.results[i].isFinal) {
         final_transcript += event.results[i][0].transcript;
       } else {
@@ -180,6 +163,7 @@ function submitButton() {
             url: "/submitSpeech",
             data: {"finalTranscript":finalTranscript}
           })
+
 }
 
 function startButton(event) {
@@ -187,7 +171,7 @@ function startButton(event) {
     recognition.stop();
     return;
   }
-  final_transcript = '';
+  final_transcript = '.';
   recognition.lang = select_dialect.value;
   recognition.start();
   ignore_onend = false;
@@ -198,6 +182,7 @@ function startButton(event) {
   showButtons('none');
   start_timestamp = event.timeStamp;
 }
+
 function showInfo(s) {
   if (s) {
     for (var child = info.firstChild; child; child = child.nextSibling) {
