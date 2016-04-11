@@ -3,18 +3,23 @@ package com.SpeakSpokeSaid.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 /**
  * Created by holdenhughes on 2/22/16.
  */
 @RestController
 public class SpeakSpokeSaidController {
-    int likes=0;
-    int ums = 0;
-    int youKnows=0;
 
 
     @RequestMapping("/submitSpeech")
-    public void Submit(String finalTranscript) {
+    public int Submit(String finalTranscript) {
+
+        int likes=0;
+        int ums = 0;
+        int youKnows=0;
         String[] words = finalTranscript.split(" ");
         for (int i=0; i <= words.length-1; i++ ) {
             if (words[i].toLowerCase().contains("like")){
@@ -25,12 +30,8 @@ public class SpeakSpokeSaidController {
                 youKnows++;
             }
         }
-        System.out.println("number of 'likes'' "+likes);
-        System.out.println("number of 'ums' "+ums);
-        System.out.println("number of 'you knows' "+youKnows);
-        likes =0;
-        ums =0;
-        youKnows =0;
+
+        return likes + ums + youKnows;
     }
 
 }
